@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Run Club Socks: Creator Campaign Hub</title>
+  <style>
+    :root { --ink:#1d1d1f; --muted:#6e6e73; --line:#e5e5ea; --bg:#f7f7f9; --accent:#ff5a36; --ok:#1f9d55; --warn:#d97706; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:system-ui,-apple-system,"Segoe UI",sans-serif; color:var(--ink); background:var(--bg); }
+    header { background:var(--ink); color:#fff; padding:14px 32px; display:flex; align-items:center; gap:16px; }
+    header a { color:#fff; text-decoration:none; font-weight:700; font-size:18px; }
+    header span { color:#bbb; font-size:13px; }
+    main { max-width:1100px; margin:0 auto; padding:24px 32px 48px; }
+    h1 { margin:8px 0 4px; } h2 { margin:28px 0 10px; font-size:18px; }
+    .muted { color:var(--muted); }
+    .banner { background:#fff7ed; border:1px solid #fed7aa; padding:10px 14px; border-radius:8px; font-size:14px; margin-bottom:16px; }
+    .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; }
+    .card { background:#fff; border:1px solid var(--line); border-radius:10px; padding:14px; }
+    .card b { display:block; font-size:24px; } .card small { color:var(--muted); }
+    table { width:100%; border-collapse:collapse; background:#fff; border:1px solid var(--line); border-radius:10px; overflow:hidden; }
+    th, td { padding:10px 12px; text-align:left; border-bottom:1px solid var(--line); font-size:14px; vertical-align:middle; }
+    th { background:#fafafa; color:var(--muted); font-weight:600; }
+    .pill { display:inline-block; padding:2px 10px; border-radius:999px; font-size:12px; font-weight:600; }
+    .pending { background:#f3f4f6; color:#374151; } .shipped { background:#dbeafe; color:#1e40af; }
+    .delivered { background:#dcfce7; color:#166534; } .live { background:#ffe4dc; color:#b4361b; }
+    .draft { background:#f3f4f6; color:#374151; } .complete { background:#dcfce7; color:#166534; }
+    .yes { color:var(--ok); font-weight:600; } .no { color:var(--warn); font-weight:600; }
+    button, .btn { background:var(--accent); color:#fff; border:0; border-radius:8px; padding:7px 12px; font-size:13px; cursor:pointer; text-decoration:none; display:inline-block; }
+    .btn.secondary { background:#fff; color:var(--ink); border:1px solid var(--line); }
+    select, input[type=text] { padding:6px; border:1px solid var(--line); border-radius:6px; font-size:13px; }
+    form.inline { display:flex; gap:6px; align-items:center; margin:0; }
+    .messages { list-style:none; padding:0; } .messages li { background:#ecfdf5; border:1px solid #a7f3d0; padding:8px 12px; border-radius:8px; margin-bottom:6px; }
+    a { color:var(--accent); }
+  </style>
+</head>
+<body>
+  <header><a href="../index.html">Creator Campaign Hub</a><span>Brief → select creators → ship product → collect content → report</span></header>
+  <main>
+    <div class="banner">Read-only demo with made-up brands and creators. Buttons work in the full Django app. Code: <a href="https://github.com/D130903/creator-campaign-hub">github.com/D130903/creator-campaign-hub</a></div>
+    
+    
+<p><a href="../index.html">← All campaigns</a></p>
+<h1>Run Club Socks <span class="pill draft">Draft</span></h1>
+<p class="muted">Stride Active · Cushioned running socks (3-pack) · 27 Oct – 1 Dec 2026 · looking for fitness creators</p>
+<p>Unbox the cushioned running socks (3-pack) and share an honest first impression. Tag @strideactive and use #gifted.</p>
+
+<h2>Report</h2>
+<div class="cards">
+  <div class="card"><b>0</b><small>creators on campaign</small></div>
+  <div class="card"><b>0</b><small>products delivered</small></div>
+  <div class="card"><b>0%</b><small>of delivered have posted</small></div>
+  <div class="card"><b>0</b><small>pieces of content</small></div>
+  <div class="card"><b>0</b><small>views</small></div>
+  <div class="card"><b>0%</b><small>engagement rate</small></div>
+</div>
+
+
+<h2>Creators and shipping</h2>
+<table>
+  <tr><th>Creator</th><th>Followers</th><th>Shipping</th><th>Delivered</th><th>Content</th><th>Update shipping</th></tr>
+  
+  <tr><td colspan="6">No creators yet. Pick some from the recommendations below.</td></tr>
+  
+</table>
+
+<h2>Waiting on content (0)</h2>
+<p class="muted">Product delivered a week or more ago, no post yet, and no reminder in the last week.</p>
+<p>Nobody to chase right now.</p>
+
+<h2>Recommended creators</h2>
+<p class="muted">Ranked by engagement rate, doubled for a niche match. A small account with an engaged audience beats a big quiet one.</p>
+<table>
+  <tr><th>Creator</th><th>Niche</th><th>Followers</th><th>Engagement</th><th>Score</th><th></th></tr>
+  
+  <tr>
+    <td>@ella.moves20 <span class="muted">Williamstown</span></td>
+    <td>fitness <span class="yes">✓ match</span></td>
+    <td>35,268</td>
+    <td>7.97%</td>
+    <td>15.94</td>
+    <td></td>
+  </tr>
+  
+  <tr>
+    <td>@lily.moves14 <span class="muted">St Kilda</span></td>
+    <td>fitness <span class="yes">✓ match</span></td>
+    <td>117,301</td>
+    <td>7.75%</td>
+    <td>15.50</td>
+    <td></td>
+  </tr>
+  
+  <tr>
+    <td>@zara.moves2 <span class="muted">Brunswick</span></td>
+    <td>fitness <span class="yes">✓ match</span></td>
+    <td>37,457</td>
+    <td>5.58%</td>
+    <td>11.16</td>
+    <td></td>
+  </tr>
+  
+  <tr>
+    <td>@chloe.family10 <span class="muted">Williamstown</span></td>
+    <td>parenting</td>
+    <td>14,771</td>
+    <td>9.14%</td>
+    <td>9.14</td>
+    <td></td>
+  </tr>
+  
+  <tr>
+    <td>@isla.eats6 <span class="muted">Carlton</span></td>
+    <td>food</td>
+    <td>6,417</td>
+    <td>8.87%</td>
+    <td>8.87</td>
+    <td></td>
+  </tr>
+  
+</table>
+
+  </main>
+</body>
+</html>

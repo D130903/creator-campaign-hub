@@ -1,0 +1,67 @@
+{% extends "campaigns/base.html" %}
+{% load humanize %}
+{% block title %}{{ campaign.name }}: Creator Campaign Hub{% endblock %}
+{% block content %}
+<p><a href="{% url 'campaigns:list' %}">← All campaigns</a></p>
+<h1>{{ campaign.name }} <span class="pill {{ campaign.status }}">{{ campaign.get_status_display }}</span></h1>
+<p class="muted">{{ campaign.brand }} · {{ campaign.product }} · {{ campaign.start_date|date:"j M" }} – {{ campaign.end_date|date:"j M Y" }} · looking for {{ campaign.target_niche }} creators</p>
+<p>{{ campaign.brief }}</p>
+
+<h2>Report</h2>
+<div class="cards">
+  <div class="card"><b>{{ report.creators }}</b><small>creators on campaign</small></div>
+  <div class="card"><b>{{ report.delivered }}</b><small>products delivered</small></div>
+  <div class="card"><b>{{ report.collection_rate }}%</b><small>of delivered have posted</small></div>
+  <div class="card"><b>{{ report.posts }}</b><small>pieces of content</small></div>
+  <div class="card"><b>{{ report.views|intcomma }}</b><small>views</small></div>
+  <div class="card"><b>{{ report.engagement_rate }}%</b><small>engagement rate</small></div>
+</div>
+{% if not static_demo %}<p><a class="btn secondary" href="{% url 'campaigns:export_csv' campaign.pk %}">Download CSV report</a></p>{% endif %}
+
+<h2>Creators and shipping</h2>
+<table>
+  <tr><th>Creator</th><th>Followers</th><th>Shipping</th><th>Delivered</th><th>Content</th><th>Update shipping</th></tr>
+  {% for a in assignments %}
+  <tr>
+    <td>{{ a.creator }} <span class="muted">{{ a.creator.suburb }}</span></td>
+    <td>{{ a.creator.followers|intcomma }}</td>
+    <td><span class="pill {{ a.shipping_status }}">{{ a.get_shipping_status_display }}</span></td>
+    <td>{{ a.delivered_on|date:"j M"|default:"–" }}</td>
+    <td>{% if a.has_content %}<span class="yes">{{ a.posts.count }} posted</span>{% else %}<span class="no">waiting</span>{% endif %}</td>
+    <td>
+      {% if static_demo %}<span class="muted">–</span>{% else %}
+      <form class="inline" method="post" action="{% url 'campaigns:update_shipping' a.pk %}">{% csrf_token %}
+        <select name="shipping_status">{% for value, label in shipping_choices %}<option value="{{ value }}" {% if value == a.shipping_status %}selected{% endif %}>{{ label }}</option>{% endfor %}</select>
+        <input type="text" name="tracking_number" value="{{ a.tracking_number }}" placeholder="Tracking no." size="12">
+        <button>Save</button>
+      </form>{% endif %}
+    </td>
+  </tr>
+  {% empty %}
+  <tr><td colspan="6">No creators yet. Pick some from the recommendations below.</td></tr>
+  {% endfor %}
+</table>
+
+<h2>Waiting on content ({{ to_chase|length }})</h2>
+<p class="muted">Product delivered a week or more ago, no post yet, and no reminder in the last week.</p>
+{% if to_chase %}
+  <p>{% for a in to_chase %}{{ a.creator }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>
+  {% if not static_demo %}<form method="post" action="{% url 'campaigns:send_reminders' campaign.pk %}">{% csrf_token %}<button>Send reminder emails</button></form>{% endif %}
+{% else %}<p>Nobody to chase right now.</p>{% endif %}
+
+<h2>Recommended creators</h2>
+<p class="muted">Ranked by engagement rate, doubled for a niche match. A small account with an engaged audience beats a big quiet one.</p>
+<table>
+  <tr><th>Creator</th><th>Niche</th><th>Followers</th><th>Engagement</th><th>Score</th><th></th></tr>
+  {% for r in recommended %}
+  <tr>
+    <td>{{ r.creator }} <span class="muted">{{ r.creator.suburb }}</span></td>
+    <td>{{ r.creator.niche }}{% if r.niche_match %} <span class="yes">✓ match</span>{% endif %}</td>
+    <td>{{ r.creator.followers|intcomma }}</td>
+    <td>{{ r.creator.engagement_rate }}%</td>
+    <td>{{ r.score }}</td>
+    <td>{% if not static_demo %}<form method="post" action="{% url 'campaigns:add_creator' campaign.pk %}">{% csrf_token %}<input type="hidden" name="creator" value="{{ r.creator.pk }}"><button>Add</button></form>{% endif %}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "campaigns/base.html" %}
+{% load humanize %}
+{% block content %}
+<h1>Campaigns</h1>
+<p class="muted">Every campaign at a glance: how many creators have the product, and how many have posted.</p>
+<table>
+  <tr><th>Campaign</th><th>Brand</th><th>Status</th><th>Creators</th><th>Delivered</th><th>Posted</th><th>Content collected</th><th>Views</th><th>Engagement</th></tr>
+  {% for row in rows %}
+  <tr>
+    <td><a href="{{ row.campaign.get_absolute_url }}">{{ row.campaign.name }}</a></td>
+    <td>{{ row.campaign.brand }}</td>
+    <td><span class="pill {{ row.campaign.status }}">{{ row.campaign.get_status_display }}</span></td>
+    <td>{{ row.report.creators }} / {{ row.campaign.creators_needed }}</td>
+    <td>{{ row.report.delivered }}</td>
+    <td>{{ row.report.with_content }}</td>
+    <td>{{ row.report.collection_rate }}%</td>
+    <td>{{ row.report.views|intcomma }}</td>
+    <td>{{ row.report.engagement_rate }}%</td>
+  </tr>
+  {% empty %}
+  <tr><td colspan="9">No campaigns yet. Run <code>python manage.py seed_demo</code>.</td></tr>
+  {% endfor %}
+</table>
+{% endblock %}
