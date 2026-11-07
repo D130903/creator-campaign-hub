@@ -1,9 +1,10 @@
 {% extends "campaigns/base.html" %}
 {% load humanize %}
 {% block content %}
+<span class="eyebrow">Product seeding</span>
 <h1>Campaigns</h1>
 <p class="muted">Every campaign at a glance: how many creators have the product, and how many have posted.</p>
-<table>
+<div class="table-wrap"><table>
   <tr><th>Campaign</th><th>Brand</th><th>Status</th><th>Creators</th><th>Delivered</th><th>Posted</th><th>Content collected</th><th>Views</th><th>Engagement</th></tr>
   {% for row in rows %}
   <tr>
@@ -20,5 +21,5 @@
   {% empty %}
   <tr><td colspan="9">No campaigns yet. Run <code>python manage.py seed_demo</code>.</td></tr>
   {% endfor %}
-</table>
+</table></div>
 {% endblock %}
