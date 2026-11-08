@@ -45,12 +45,15 @@
     form.inline { display:flex; gap:6px; align-items:center; margin:0; }
     .messages { list-style:none; padding:0; } .messages li { background:#d9efe8; border:1px solid #a9d9c9; padding:10px 16px; border-radius:14px; margin-bottom:6px; }
     a { color:var(--green); font-weight:600; }
+    .signout { margin-left:auto; color:#fff; } .signout small { font-size:13px; }
+    .login { max-width:360px; } .login p { display:flex; flex-direction:column; gap:4px; } .login input { padding:9px 12px; border:1px solid var(--line); border-radius:10px; font:inherit; }
     .back { text-decoration:none; font-size:14px; }
     @media (max-width:640px) { header, main { padding-left:20px; padding-right:20px; } h1 { font-size:30px; } }
   </style>
 </head>
 <body>
-  <header><a href="{% url 'campaigns:list' %}">Creator Campaign Hub</a><span>Brief → select creators → ship product → collect content → report</span></header>
+  <header><a href="{% url 'campaigns:list' %}">Creator Campaign Hub</a><span>Brief → select creators → ship product → collect content → report</span>
+    {% if user.is_authenticated %}<form class="inline signout" method="post" action="{% url 'logout' %}">{% csrf_token %}<small>{{ user.get_username }}</small><button type="submit">Sign out</button></form>{% endif %}</header>
   <main>
     {% if static_demo %}<div class="banner">Read-only demo with made-up brands and creators. Buttons work in the full Django app. Code: <a href="https://github.com/D130903/creator-campaign-hub">github.com/D130903/creator-campaign-hub</a></div>{% endif %}
     {% if messages %}<ul class="messages">{% for m in messages %}<li>{{ m }}</li>{% endfor %}</ul>{% endif %}

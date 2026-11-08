@@ -1,0 +1,23 @@
+name: daily reminders
+
+# Every morning, find creators who got the product 7+ days ago but haven't posted, and remind them.
+# This runs against fresh demo data, and emails print to the log (no SENDGRID_API_KEY is set).
+# Point it at the real database and add the key as a repository secret to send real emails.
+on:
+  schedule:
+    - cron: "0 22 * * *"  # 22:00 UTC = 9am Melbourne (AEDT)
+  workflow_dispatch:      # "Run workflow" button, for running it by hand
+
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python manage.py migrate
+      - run: python manage.py seed_demo
+      - run: python manage.py send_reminders

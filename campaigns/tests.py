@@ -2,7 +2,9 @@ from datetime import date, timedelta
 from io import StringIO
 from decimal import Decimal
 
+from django.contrib.auth.models import User
 from django.core import mail
+from django.core.exceptions import ValidationError
 from django.core.management import call_command
 from django.test import TestCase
 from django.urls import reverse
@@ -36,6 +38,11 @@ class EngagementRateTests(TestCase):
 
     def test_zero_followers_does_not_divide_by_zero(self):
         self.assertEqual(make_creator("b", followers=0).engagement_rate, Decimal("0"))
+
+    def test_niche_must_come_from_the_list(self):
+        creator = make_creator("typo", niche="baking")  # not on the list, so it could never match a campaign
+        with self.assertRaises(ValidationError):
+            creator.full_clean()
 
 
 class RecommendCreatorsTests(CampaignTestCase):
@@ -109,8 +116,23 @@ class RemindersTests(CampaignTestCase):
         assignment.refresh_from_db()
         self.assertEqual(assignment.last_reminder_on, TODAY)
 
+    def test_daily_reminder_run_is_safe_to_repeat(self):
+        overdue = self.deliver("daily", days_ago=8)
+        overdue.delivered_on = date.today() - timedelta(days=8)  # the command uses the real date
+        overdue.save()
+
+        call_command("send_reminders", stdout=StringIO())
+        call_command("send_reminders", stdout=StringIO())  # the next run must not email them again
+
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].to, ["daily@example.com"])
+
 
 class ViewTests(CampaignTestCase):
+    def setUp(self):
+        super().setUp()
+        self.client.force_login(User.objects.create_user("team", password="test-pass-123"))
+
     def test_list_and_detail_pages_load(self):
         self.assertContains(self.client.get(reverse("campaigns:list")), "Loaf Launch")
         self.assertContains(self.client.get(self.campaign.get_absolute_url()), "Recommended creators")
@@ -136,6 +158,15 @@ class ViewTests(CampaignTestCase):
         self.client.post(reverse("campaigns:update_shipping", args=[assignment.pk]), {"shipping_status": "lost"})
         assignment.refresh_from_db()
         self.assertEqual(assignment.shipping_status, "pending")
+
+    def test_signed_out_visitors_are_sent_to_sign_in(self):
+        self.client.logout()
+        for url in (reverse("campaigns:list"), reverse("campaigns:export_csv", args=[self.campaign.pk])):
+            response = self.client.get(url)
+            self.assertRedirects(response, f"{reverse('login')}?next={url}")
+        response = self.client.post(reverse("campaigns:send_reminders", args=[self.campaign.pk]))
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(len(mail.outbox), 0)
 
     def test_get_cannot_change_data(self):
         response = self.client.get(reverse("campaigns:send_reminders", args=[self.campaign.pk]))

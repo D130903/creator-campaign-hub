@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Barrier Repair Serum Launch: Creator Campaign Hub</title>
+  <title>Spring Sourdough Drop: Creator Campaign Hub</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -45,30 +45,33 @@
     form.inline { display:flex; gap:6px; align-items:center; margin:0; }
     .messages { list-style:none; padding:0; } .messages li { background:#d9efe8; border:1px solid #a9d9c9; padding:10px 16px; border-radius:14px; margin-bottom:6px; }
     a { color:var(--green); font-weight:600; }
+    .signout { margin-left:auto; color:#fff; } .signout small { font-size:13px; }
+    .login { max-width:360px; } .login p { display:flex; flex-direction:column; gap:4px; } .login input { padding:9px 12px; border:1px solid var(--line); border-radius:10px; font:inherit; }
     .back { text-decoration:none; font-size:14px; }
     @media (max-width:640px) { header, main { padding-left:20px; padding-right:20px; } h1 { font-size:30px; } }
   </style>
 </head>
 <body>
-  <header><a href="../index.html">Creator Campaign Hub</a><span>Brief → select creators → ship product → collect content → report</span></header>
+  <header><a href="../index.html">Creator Campaign Hub</a><span>Brief → select creators → ship product → collect content → report</span>
+    </header>
   <main>
     <div class="banner">Read-only demo with made-up brands and creators. Buttons work in the full Django app. Code: <a href="https://github.com/D130903/creator-campaign-hub">github.com/D130903/creator-campaign-hub</a></div>
     
     
 <p><a class="back" href="../index.html">← All campaigns</a></p>
 <span class="eyebrow">Campaign</span>
-<h1>Barrier Repair Serum Launch <span class="pill live">Live</span></h1>
-<p class="muted">Glow Theory Skincare · Barrier Repair Serum 30ml · 7 Oct – 11 Nov 2026 · looking for beauty creators</p>
-<p>Unbox the barrier repair serum 30ml and share an honest first impression. Tag @glowtheoryskincare and use #gifted.</p>
+<h1>Spring Sourdough Drop <span class="pill live">Live</span></h1>
+<p class="muted">Golden Crumb Bakery · Seeded sourdough loaf · 15 Oct – 19 Nov 2026 · looking for food creators</p>
+<p>Unbox the seeded sourdough loaf and share an honest first impression. Tag @goldencrumbbakery and use #gifted.</p>
 
 <h2>Report</h2>
 <div class="cards">
-  <div class="card"><b>8</b><small>creators on campaign</small></div>
-  <div class="card"><b>6</b><small>products delivered</small></div>
-  <div class="card"><b>66.7%</b><small>of delivered have posted</small></div>
-  <div class="card"><b>6</b><small>pieces of content</small></div>
-  <div class="card"><b>88,155</b><small>views</small></div>
-  <div class="card"><b>6.1%</b><small>engagement rate</small></div>
+  <div class="card"><b>10</b><small>creators on campaign</small></div>
+  <div class="card"><b>7</b><small>products delivered</small></div>
+  <div class="card"><b>71.4%</b><small>of delivered have posted</small></div>
+  <div class="card"><b>8</b><small>pieces of content</small></div>
+  <div class="card"><b>183,981</b><small>views</small></div>
+  <div class="card"><b>14.8%</b><small>engagement rate</small></div>
 </div>
 
 
@@ -79,9 +82,20 @@
   <tr>
     <td>@ava.family4 <span class="muted">South Yarra</span></td>
     <td>58,188</td>
-    <td><span class="pill pending">Pending</span></td>
-    <td>–</td>
-    <td><span class="no">waiting</span></td>
+    <td><span class="pill delivered">Delivered</span></td>
+    <td>19 Oct</td>
+    <td><span class="yes">2 posted</span></td>
+    <td>
+      <span class="muted">–</span>
+    </td>
+  </tr>
+  
+  <tr>
+    <td>@grace.family16 <span class="muted">St Kilda</span></td>
+    <td>4,258</td>
+    <td><span class="pill delivered">Delivered</span></td>
+    <td>18 Oct</td>
+    <td><span class="yes">1 posted</span></td>
     <td>
       <span class="muted">–</span>
     </td>
@@ -90,8 +104,8 @@
   <tr>
     <td>@hugo.glow19 <span class="muted">Brunswick</span></td>
     <td>20,266</td>
-    <td><span class="pill delivered">Delivered</span></td>
-    <td>12 Oct</td>
+    <td><span class="pill shipped">Shipped</span></td>
+    <td>–</td>
     <td><span class="no">waiting</span></td>
     <td>
       <span class="muted">–</span>
@@ -102,19 +116,8 @@
     <td>@isla.eats6 <span class="muted">Carlton</span></td>
     <td>6,417</td>
     <td><span class="pill delivered">Delivered</span></td>
-    <td>13 Oct</td>
+    <td>19 Oct</td>
     <td><span class="yes">2 posted</span></td>
-    <td>
-      <span class="muted">–</span>
-    </td>
-  </tr>
-  
-  <tr>
-    <td>@jack.glow1 <span class="muted">Fitzroy</span></td>
-    <td>72,643</td>
-    <td><span class="pill delivered">Delivered</span></td>
-    <td>13 Oct</td>
-    <td><span class="yes">1 posted</span></td>
     <td>
       <span class="muted">–</span>
     </td>
@@ -123,19 +126,41 @@
   <tr>
     <td>@kai.glow7 <span class="muted">Fitzroy</span></td>
     <td>2,176</td>
-    <td><span class="pill delivered">Delivered</span></td>
-    <td>9 Oct</td>
-    <td><span class="yes">1 posted</span></td>
+    <td><span class="pill shipped">Shipped</span></td>
+    <td>–</td>
+    <td><span class="no">waiting</span></td>
     <td>
       <span class="muted">–</span>
     </td>
   </tr>
   
   <tr>
-    <td>@noah.wellbeing5 <span class="muted">Footscray</span></td>
-    <td>2,043</td>
+    <td>@max.daily21 <span class="muted">South Yarra</span></td>
+    <td>3,087</td>
     <td><span class="pill delivered">Delivered</span></td>
-    <td>11 Oct</td>
+    <td>21 Oct</td>
+    <td><span class="no">waiting</span></td>
+    <td>
+      <span class="muted">–</span>
+    </td>
+  </tr>
+  
+  <tr>
+    <td>@mia.eats0 <span class="muted">Brunswick</span></td>
+    <td>86,993</td>
+    <td><span class="pill delivered">Delivered</span></td>
+    <td>17 Oct</td>
+    <td><span class="yes">2 posted</span></td>
+    <td>
+      <span class="muted">–</span>
+    </td>
+  </tr>
+  
+  <tr>
+    <td>@omar.daily15 <span class="muted">South Yarra</span></td>
+    <td>5,546</td>
+    <td><span class="pill delivered">Delivered</span></td>
+    <td>21 Oct</td>
     <td><span class="no">waiting</span></td>
     <td>
       <span class="muted">–</span>
@@ -145,7 +170,7 @@
   <tr>
     <td>@priya.eats12 <span class="muted">Fitzroy</span></td>
     <td>8,891</td>
-    <td><span class="pill pending">Pending</span></td>
+    <td><span class="pill shipped">Shipped</span></td>
     <td>–</td>
     <td><span class="no">waiting</span></td>
     <td>
@@ -154,11 +179,11 @@
   </tr>
   
   <tr>
-    <td>@tom.glow13 <span class="muted">St Kilda</span></td>
-    <td>39,462</td>
+    <td>@sofia.eats18 <span class="muted">Richmond</span></td>
+    <td>118,728</td>
     <td><span class="pill delivered">Delivered</span></td>
-    <td>11 Oct</td>
-    <td><span class="yes">2 posted</span></td>
+    <td>19 Oct</td>
+    <td><span class="yes">1 posted</span></td>
     <td>
       <span class="muted">–</span>
     </td>
@@ -169,7 +194,7 @@
 <h2>Waiting on content (2)</h2>
 <p class="muted">Product delivered a week or more ago, no post yet, and no reminder in the last week.</p>
 
-  <p>@hugo.glow19, @noah.wellbeing5</p>
+  <p>@max.daily21, @omar.daily15</p>
   
 
 
@@ -180,7 +205,7 @@
   
   <tr>
     <td>@chloe.family10 <span class="muted">Williamstown</span></td>
-    <td>parenting</td>
+    <td>Parenting</td>
     <td>14,771</td>
     <td>9.14%</td>
     <td>9.14</td>
@@ -188,26 +213,8 @@
   </tr>
   
   <tr>
-    <td>@mia.eats0 <span class="muted">Brunswick</span></td>
-    <td>food</td>
-    <td>86,993</td>
-    <td>8.84%</td>
-    <td>8.84</td>
-    <td></td>
-  </tr>
-  
-  <tr>
-    <td>@sofia.eats18 <span class="muted">Richmond</span></td>
-    <td>food</td>
-    <td>118,728</td>
-    <td>8.62%</td>
-    <td>8.62</td>
-    <td></td>
-  </tr>
-  
-  <tr>
     <td>@leo.daily3 <span class="muted">South Yarra</span></td>
-    <td>lifestyle</td>
+    <td>Lifestyle</td>
     <td>3,775</td>
     <td>8.56%</td>
     <td>8.56</td>
@@ -215,11 +222,29 @@
   </tr>
   
   <tr>
+    <td>@noah.wellbeing5 <span class="muted">Footscray</span></td>
+    <td>Wellness</td>
+    <td>2,043</td>
+    <td>8.32%</td>
+    <td>8.32</td>
+    <td></td>
+  </tr>
+  
+  <tr>
     <td>@ella.moves20 <span class="muted">Williamstown</span></td>
-    <td>fitness</td>
+    <td>Fitness</td>
     <td>35,268</td>
     <td>7.97%</td>
     <td>7.97</td>
+    <td></td>
+  </tr>
+  
+  <tr>
+    <td>@lily.moves14 <span class="muted">St Kilda</span></td>
+    <td>Fitness</td>
+    <td>117,301</td>
+    <td>7.75%</td>
+    <td>7.75</td>
     <td></td>
   </tr>
   

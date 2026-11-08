@@ -4,6 +4,16 @@ from django.db import models
 from django.urls import reverse
 
 
+class Niche(models.TextChoices):
+    """One fixed list, so a creator's niche and a campaign's target niche always match exactly."""
+    FOOD = "food", "Food"
+    BEAUTY = "beauty", "Beauty"
+    FITNESS = "fitness", "Fitness"
+    LIFESTYLE = "lifestyle", "Lifestyle"
+    PARENTING = "parenting", "Parenting"
+    WELLNESS = "wellness", "Wellness"
+
+
 class Brand(models.Model):
     name = models.CharField(max_length=100, unique=True)
     category = models.CharField(max_length=50)
@@ -20,7 +30,7 @@ class Creator(models.Model):
     handle = models.CharField(max_length=60, unique=True, help_text="Instagram handle, without the @")
     name = models.CharField(max_length=100)
     email = models.EmailField()
-    niche = models.CharField(max_length=50)
+    niche = models.CharField(max_length=50, choices=Niche.choices)
     suburb = models.CharField(max_length=60)
     followers = models.PositiveIntegerField()
     avg_likes = models.PositiveIntegerField(help_text="Average likes per recent post")
@@ -51,7 +61,7 @@ class Campaign(models.Model):
     name = models.CharField(max_length=120)
     product = models.CharField(max_length=120)
     brief = models.TextField()
-    target_niche = models.CharField(max_length=50)
+    target_niche = models.CharField(max_length=50, choices=Niche.choices)
     creators_needed = models.PositiveIntegerField(default=10)
     start_date = models.DateField()
     end_date = models.DateField()

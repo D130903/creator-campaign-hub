@@ -5,7 +5,7 @@
 <p><a class="back" href="{% url 'campaigns:list' %}">← All campaigns</a></p>
 <span class="eyebrow">Campaign</span>
 <h1>{{ campaign.name }} <span class="pill {{ campaign.status }}">{{ campaign.get_status_display }}</span></h1>
-<p class="muted">{{ campaign.brand }} · {{ campaign.product }} · {{ campaign.start_date|date:"j M" }} – {{ campaign.end_date|date:"j M Y" }} · looking for {{ campaign.target_niche }} creators</p>
+<p class="muted">{{ campaign.brand }} · {{ campaign.product }} · {{ campaign.start_date|date:"j M" }} – {{ campaign.end_date|date:"j M Y" }} · looking for {{ campaign.get_target_niche_display|lower }} creators</p>
 <p>{{ campaign.brief }}</p>
 
 <h2>Report</h2>
@@ -57,7 +57,7 @@
   {% for r in recommended %}
   <tr>
     <td>{{ r.creator }} <span class="muted">{{ r.creator.suburb }}</span></td>
-    <td>{{ r.creator.niche }}{% if r.niche_match %} <span class="yes">✓ match</span>{% endif %}</td>
+    <td>{{ r.creator.get_niche_display }}{% if r.niche_match %} <span class="yes">✓ match</span>{% endif %}</td>
     <td>{{ r.creator.followers|intcomma }}</td>
     <td>{{ r.creator.engagement_rate }}%</td>
     <td>{{ r.score }}</td>
