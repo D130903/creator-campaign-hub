@@ -11,4 +11,5 @@ urlpatterns = [
     path("campaigns/<int:pk>/send-reminders/", views.send_reminders, name="send_reminders"),
     path("campaigns/<int:pk>/report.csv", views.export_csv, name="export_csv"),
     path("assignments/<int:pk>/shipping/", views.update_shipping, name="update_shipping"),
+    path("assignments/<int:pk>/remove/", views.remove_creator, name="remove_creator"),
 ]

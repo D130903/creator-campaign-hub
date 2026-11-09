@@ -159,6 +159,12 @@ class ViewTests(CampaignTestCase):
         assignment.refresh_from_db()
         self.assertEqual(assignment.shipping_status, "pending")
 
+    def test_remove_creator_takes_them_off_the_campaign_only(self):
+        assignment = Assignment.objects.create(campaign=self.campaign, creator=make_creator("gone"))
+        self.client.post(reverse("campaigns:remove_creator", args=[assignment.pk]))
+        self.assertFalse(self.campaign.assignments.exists())
+        self.assertTrue(Creator.objects.filter(handle="gone").exists())  # still available for other campaigns
+
     def test_signed_out_visitors_are_sent_to_sign_in(self):
         self.client.logout()
         for url in (reverse("campaigns:list"), reverse("campaigns:export_csv", args=[self.campaign.pk])):

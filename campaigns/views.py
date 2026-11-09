@@ -58,6 +58,16 @@ def update_shipping(request, pk):
 
 
 @require_POST
+def remove_creator(request, pk):
+    """Take a creator off a campaign. The creator stays in the database for other campaigns."""
+    assignment = get_object_or_404(Assignment.objects.select_related("campaign", "creator"), pk=pk)
+    campaign, creator = assignment.campaign, assignment.creator
+    assignment.delete()
+    messages.success(request, f"Removed {creator} from the campaign.")
+    return redirect(campaign)
+
+
+@require_POST
 def send_reminders(request, pk):
     campaign = get_object_or_404(Campaign, pk=pk)
     due = services.creators_to_chase(campaign, date.today())

@@ -21,7 +21,7 @@
 
 <h2>Creators and shipping</h2>
 <div class="table-wrap"><table>
-  <tr><th>Creator</th><th>Followers</th><th>Shipping</th><th>Delivered</th><th>Content</th><th>Update shipping</th></tr>
+  <tr><th>Creator</th><th>Followers</th><th>Shipping</th><th>Delivered</th><th>Content</th><th>Update shipping</th>{% if not static_demo %}<th></th>{% endif %}</tr>
   {% for a in assignments %}
   <tr>
     <td>{{ a.creator }} <span class="muted">{{ a.creator.suburb }}</span></td>
@@ -37,6 +37,11 @@
         <button>Save</button>
       </form>{% endif %}
     </td>
+    {% if not static_demo %}<td>
+      <form method="post" action="{% url 'campaigns:remove_creator' a.pk %}" onsubmit="return confirm('Remove {{ a.creator }} from this campaign? Their logged posts are removed too.');">{% csrf_token %}
+        <button class="btn secondary">Remove</button>
+      </form>
+    </td>{% endif %}
   </tr>
   {% empty %}
   <tr><td colspan="6">No creators yet. Pick some from the recommendations below.</td></tr>
