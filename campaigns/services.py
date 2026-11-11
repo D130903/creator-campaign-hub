@@ -5,7 +5,7 @@ from decimal import Decimal
 from django.core.mail import send_mail
 from django.db.models import Sum
 
-from .models import Assignment, Creator
+from .models import Assignment, Creator, Payment
 
 REMINDER_AFTER_DAYS = 7
 
@@ -88,3 +88,68 @@ def _pct(part, whole):
     if not whole:
         return Decimal("0")
     return (Decimal(part) / Decimal(whole) * 100).quantize(Decimal("0.1"))
+
+
+# --- Payments -------------------------------------------------------------------------
+
+class PaymentsNotConfigured(Exception):
+    """Raised when there's no Stripe test key, so the view can show a friendly message."""
+
+
+def _stripe():
+    """Return the Stripe client, refusing anything but a test-mode key."""
+    import stripe
+    from django.conf import settings
+
+    key = settings.STRIPE_SECRET_KEY
+    if not key.startswith("sk_test_"):
+        raise PaymentsNotConfigured("Set STRIPE_SECRET_KEY to a Stripe test key (sk_test_...).")
+    stripe.api_key = key
+    return stripe
+
+
+def start_checkout(campaign, success_url, cancel_url):
+    """Create a Stripe Checkout page for the campaign fee and record a pending Payment.
+
+    Returns (payment, url). The brand is sent to `url`, which Stripe hosts, so card
+    details never pass through this app.
+    """
+    stripe = _stripe()
+    session = stripe.checkout.Session.create(
+        mode="payment",
+        line_items=[{
+            "quantity": 1,
+            "price_data": {
+                "currency": "aud",
+                "unit_amount": int(campaign.fee * 100),  # Stripe works in cents
+                "product_data": {"name": f"Campaign fee: {campaign.name} ({campaign.brand})"},
+            },
+        }],
+        customer_email=campaign.brand.contact_email,
+        success_url=success_url + "?session_id={CHECKOUT_SESSION_ID}",
+        cancel_url=cancel_url,
+        metadata={"campaign_id": str(campaign.pk)},
+    )
+    payment = Payment.objects.create(
+        campaign=campaign, amount=campaign.fee, stripe_session_id=session.id,
+    )
+    return payment, session.url
+
+
+def confirm_payment(campaign, session_id, now):
+    """Ask Stripe whether a checkout session was paid, and mark our Payment if so.
+
+    We never trust the browser's word that it paid: the session id only tells us which
+    payment to check, and the answer comes straight from Stripe. Safe to call twice.
+    """
+    payment = Payment.objects.filter(campaign=campaign, stripe_session_id=session_id).first()
+    if payment is None:
+        return None
+    if payment.status == Payment.Status.PAID:
+        return payment
+    session = _stripe().checkout.Session.retrieve(session_id)
+    if session.payment_status == "paid":
+        payment.status = Payment.Status.PAID
+        payment.paid_at = now
+        payment.save(update_fields=["status", "paid_at"])
+    return payment

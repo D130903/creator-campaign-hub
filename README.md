@@ -46,6 +46,24 @@ python manage.py test                       # run the tests
 In development, emails print to the console. To send real email through **SendGrid**, set
 `SENDGRID_API_KEY` and the app switches to SendGrid's SMTP relay (see `hub_project/settings.py`).
 
+## Payments (Stripe, test mode)
+
+Each campaign has a fee the brand pays RISER. The **Pay with card** button on a campaign page sends
+the brand to a **Stripe Checkout** page, so card details never touch this app. When Stripe sends the
+brand back, the app asks Stripe directly whether the payment went through before marking the campaign
+paid, so a faked link can't mark anything paid.
+
+To try it, create a free Stripe account, copy the **test** secret key (`sk_test_...`), and run:
+
+```
+set STRIPE_SECRET_KEY=sk_test_...
+python manage.py runserver
+```
+
+Pay with Stripe's test card `4242 4242 4242 4242`, any future date and any CVC. The app refuses
+live keys (`sk_live_...`), so no real money can move from this demo. Paying creators would be the
+next step, using Stripe Connect.
+
 ## Daily reminders
 
 `.github/workflows/daily-reminders.yml` runs `send_reminders` every morning at 9am Melbourne time,
@@ -58,7 +76,7 @@ emails the same creator twice.
 
 - **Python + Django 6.1**, SQLite for development
 - Business logic lives in `campaigns/services.py` (creator ranking, campaign report, who to chase). The views stay thin, and the logic is easy to test
-- **18 automated tests** in `campaigns/tests.py` cover the maths, the reminder rules, sign-in and the views. For example, a GET request can't change data, a signed-out visitor is sent to sign in, and a niche that isn't on the list is rejected
+- **23 automated tests** in `campaigns/tests.py` cover the maths, the reminder rules, sign-in, payments and the views. Stripe is faked in the tests, so they never call the internet. For example, a GET request can't change data, a signed-out visitor is sent to sign in, and a niche that isn't on the list is rejected
 - **GitHub Actions** runs the checks and the tests on every push (`.github/workflows/tests.yml`)
 - The demo on GitHub Pages is the real Django templates rendered to static HTML by `export_static`
 

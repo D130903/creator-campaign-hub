@@ -1,9 +1,13 @@
 import csv
 from datetime import date
 
+import stripe
+
 from django.contrib import messages
 from django.http import HttpResponse
+from django.utils import timezone
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.views.decorators.http import require_POST
 
 from . import services
@@ -26,6 +30,7 @@ def campaign_detail(request, pk):
         "recommended": services.recommend_creators(campaign, limit=5),
         "to_chase": services.creators_to_chase(campaign, date.today()),
         "shipping_choices": Assignment.Shipping.choices,
+        "payments": campaign.payments.all(),
     })
 
 
@@ -74,6 +79,36 @@ def send_reminders(request, pk):
     for assignment in due:
         services.send_reminder(assignment, date.today())
     messages.success(request, f"Sent {len(due)} reminder email(s).")
+    return redirect(campaign)
+
+
+@require_POST
+def pay_campaign(request, pk):
+    """Send the brand to a Stripe-hosted checkout page for the campaign fee."""
+    campaign = get_object_or_404(Campaign.objects.select_related("brand"), pk=pk)
+    if campaign.is_paid:
+        messages.info(request, "This campaign is already paid.")
+        return redirect(campaign)
+    done_url = request.build_absolute_uri(reverse("campaigns:payment_done", args=[pk]))
+    try:
+        _, url = services.start_checkout(campaign, success_url=done_url, cancel_url=request.build_absolute_uri(campaign.get_absolute_url()))
+    except services.PaymentsNotConfigured:
+        messages.error(request, "Payments aren't set up yet: add a Stripe test key (STRIPE_SECRET_KEY).")
+        return redirect(campaign)
+    except stripe.StripeError as error:
+        messages.error(request, f"Stripe couldn't start the payment: {error.user_message or 'please try again.'}")
+        return redirect(campaign)
+    return redirect(url)
+
+
+def payment_done(request, pk):
+    """Stripe sends the brand back here. We check with Stripe before marking anything paid."""
+    campaign = get_object_or_404(Campaign, pk=pk)
+    payment = services.confirm_payment(campaign, request.GET.get("session_id", ""), timezone.now())
+    if payment and payment.status == payment.Status.PAID:
+        messages.success(request, f"Payment of ${payment.amount} received. Thank you!")
+    else:
+        messages.error(request, "We couldn't confirm that payment with Stripe.")
     return redirect(campaign)
 
 

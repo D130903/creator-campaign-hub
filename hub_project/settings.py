@@ -148,3 +148,9 @@ else:
     MAILERS = {"default": {"BACKEND": "django.core.mail.backends.console.EmailBackend"}}
 
 DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "campaigns@example.com")
+
+# Payments
+# Brands pay campaign fees through Stripe Checkout. Only Stripe *test* keys (sk_test_...)
+# are accepted, so no real money can move from this demo. Without a key the Pay button
+# explains that payments aren't set up yet.
+STRIPE_SECRET_KEY = os.environ.get("STRIPE_SECRET_KEY", "")

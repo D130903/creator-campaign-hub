@@ -6,11 +6,14 @@ from django.contrib.auth.models import User
 from django.core import mail
 from django.core.exceptions import ValidationError
 from django.core.management import call_command
-from django.test import TestCase
+from types import SimpleNamespace
+from unittest.mock import patch
+
+from django.test import TestCase, override_settings
 from django.urls import reverse
 
 from . import services
-from .models import Assignment, Brand, Campaign, ContentPost, Creator
+from .models import Assignment, Brand, Campaign, ContentPost, Creator, Payment
 
 TODAY = date(2026, 10, 22)
 
@@ -183,6 +186,54 @@ class ViewTests(CampaignTestCase):
         response = self.client.get(reverse("campaigns:export_csv", args=[self.campaign.pk]))
         self.assertEqual(response["Content-Type"], "text/csv")
         self.assertIn("@csv", response.content.decode())
+
+
+@override_settings(STRIPE_SECRET_KEY="sk_test_fake")
+class PaymentTests(CampaignTestCase):
+    """Stripe is faked here, so the tests never call the internet or move money."""
+
+    def setUp(self):
+        super().setUp()
+        self.client.force_login(User.objects.create_user("staff", password="pw"))
+
+    def fake_session(self, paid=False):
+        return SimpleNamespace(id="cs_test_123", url="https://checkout.stripe.com/c/pay/cs_test_123",
+                               payment_status="paid" if paid else "unpaid")
+
+    @patch("stripe.checkout.Session.create")
+    def test_pay_sends_brand_to_stripe_for_the_campaign_fee(self, create):
+        create.return_value = self.fake_session()
+        response = self.client.post(reverse("campaigns:pay_campaign", args=[self.campaign.pk]))
+        self.assertRedirects(response, create.return_value.url, fetch_redirect_response=False)
+        self.assertEqual(create.call_args.kwargs["line_items"][0]["price_data"]["unit_amount"], 50000)  # $500 in cents
+        payment = Payment.objects.get()
+        self.assertEqual(payment.status, Payment.Status.PENDING)
+        self.assertFalse(self.campaign.is_paid)
+
+    @patch("stripe.checkout.Session.retrieve")
+    def test_payment_is_only_marked_paid_after_stripe_confirms_it(self, retrieve):
+        Payment.objects.create(campaign=self.campaign, amount=500, stripe_session_id="cs_test_123")
+        url = reverse("campaigns:payment_done", args=[self.campaign.pk]) + "?session_id=cs_test_123"
+        retrieve.return_value = self.fake_session(paid=False)
+        self.client.get(url)
+        self.assertFalse(self.campaign.is_paid)
+        retrieve.return_value = self.fake_session(paid=True)
+        self.client.get(url)
+        self.assertTrue(self.campaign.is_paid)
+
+    @patch("stripe.checkout.Session.retrieve")
+    def test_made_up_session_id_marks_nothing_paid(self, retrieve):
+        url = reverse("campaigns:payment_done", args=[self.campaign.pk]) + "?session_id=cs_test_fake"
+        self.client.get(url)
+        retrieve.assert_not_called()
+        self.assertFalse(self.campaign.is_paid)
+
+    @override_settings(STRIPE_SECRET_KEY="sk_live_real_money")
+    @patch("stripe.checkout.Session.create")
+    def test_live_stripe_keys_are_refused(self, create):
+        response = self.client.post(reverse("campaigns:pay_campaign", args=[self.campaign.pk]), follow=True)
+        create.assert_not_called()
+        self.assertContains(response, "Payments aren&#x27;t set up yet")
 
 
 class SeedDemoTests(TestCase):

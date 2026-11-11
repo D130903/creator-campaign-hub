@@ -66,6 +66,10 @@ class Campaign(models.Model):
     start_date = models.DateField()
     end_date = models.DateField()
     status = models.CharField(max_length=10, choices=Status.choices, default=Status.DRAFT)
+    fee = models.DecimalField(
+        max_digits=8, decimal_places=2, default=Decimal("500.00"),
+        help_text="What the brand pays RISER for this campaign, in AUD",
+    )
 
     class Meta:
         ordering = ["-start_date"]
@@ -75,6 +79,10 @@ class Campaign(models.Model):
 
     def get_absolute_url(self):
         return reverse("campaigns:detail", args=[self.pk])
+
+    @property
+    def is_paid(self):
+        return self.payments.filter(status=Payment.Status.PAID).exists()
 
 
 class Assignment(models.Model):
@@ -125,3 +133,29 @@ class ContentPost(models.Model):
 
     def __str__(self):
         return f"{self.get_format_display()} by {self.assignment.creator}"
+
+
+class Payment(models.Model):
+    """One attempt by a brand to pay a campaign fee through Stripe Checkout.
+
+    Card details never touch this app: Stripe hosts the payment page, and we only keep
+    Stripe's session id so we can ask Stripe whether the payment went through.
+    """
+
+    class Status(models.TextChoices):
+        PENDING = "pending", "Pending"
+        PAID = "paid", "Paid"
+
+    campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE, related_name="payments")
+    amount = models.DecimalField(max_digits=8, decimal_places=2)
+    currency = models.CharField(max_length=3, default="aud")
+    status = models.CharField(max_length=10, choices=Status.choices, default=Status.PENDING)
+    stripe_session_id = models.CharField(max_length=255, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    paid_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.campaign}: ${self.amount} {self.get_status_display()}"
