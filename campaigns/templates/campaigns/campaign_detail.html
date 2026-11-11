@@ -25,6 +25,9 @@
 {% if not static_demo and not campaign.is_paid %}
 <form method="post" action="{% url 'campaigns:pay_campaign' campaign.pk %}">{% csrf_token %}<button>Pay with card (Stripe test mode)</button></form>
 <p class="muted">Card details are entered on Stripe's own secure page, never in this app. Test mode only, so no real money moves.</p>
+{% elif static_demo %}
+<p><button disabled title="Works in the running app, not this read-only demo">Pay with card (Stripe test mode)</button></p>
+<p class="muted">Read-only demo. In the running app this button opens Stripe's secure checkout page (test mode, so no real money moves). The app only marks the campaign Paid after Stripe confirms it.</p>
 {% endif %}
 {% if payments %}<div class="table-wrap"><table>
   <tr><th>Started</th><th>Amount</th><th>Status</th><th>Paid</th></tr>

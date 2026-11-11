@@ -36,6 +36,7 @@
     .pending { background:var(--line); color:var(--text); } .shipped { background:#e7ddeb; color:var(--plum); }
     .delivered { background:#d9efe8; color:var(--green); } .live { background:var(--citrus); color:var(--ink); }
     .draft { background:var(--line); color:var(--text); } .complete { background:#d9efe8; color:var(--green); }
+    .paid { background:#d9efe8; color:var(--green); } .unpaid { background:#fbe3d6; color:var(--warn); }
     .yes { color:var(--ok); font-weight:700; } .no { color:var(--warn); font-weight:700; }
     button, .btn { background:var(--citrus); color:var(--ink); border:2px solid var(--citrus); border-radius:50px; padding:7px 18px; font:inherit; font-size:13px; font-weight:700; cursor:pointer; text-decoration:none; display:inline-block; transition:background-color .2s,border-color .2s; }
     button:hover, .btn:hover { background:var(--citrus-dark); border-color:var(--citrus-dark); }
@@ -75,6 +76,12 @@
 </div>
 
 
+<h2>Payment</h2>
+<p>Campaign fee: <b>$500.00 AUD</b>
+  <span class="pill unpaid">Not paid</span></p>
+
+<p><button disabled title="Works in the running app, not this read-only demo">Pay with card (Stripe test mode)</button></p>
+<p class="muted">Read-only demo. In the running app this button opens Stripe's secure checkout page (test mode, so no real money moves). The app only marks the campaign Paid after Stripe confirms it.</p>
 <h2>Creators and shipping</h2>
 <div class="table-wrap"><table>
   <tr><th>Creator</th><th>Followers</th><th>Shipping</th><th>Delivered</th><th>Content</th><th>Update shipping</th></tr>
